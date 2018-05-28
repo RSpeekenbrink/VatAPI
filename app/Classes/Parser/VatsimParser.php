@@ -33,7 +33,7 @@ abstract class VatsimParser
             if (filter_var($this->source, FILTER_VALIDATE_URL)) { 
                 $fileContent = file_get_contents($this->source);
 
-                $lines = explode("\n", $fileContent);
+                $lines = explode("\r\n", $fileContent);
 
                 foreach($lines as $line) {
                     if(strlen($line) > 0)

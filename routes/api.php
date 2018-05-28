@@ -17,6 +17,6 @@ Route::get('/key', function(Request $request) {
     return str_random(60);
 });
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::prefix('vatapi')->middleware('auth:api')->group(function () {
+    Route::get('status', array('as' => 'vatapi.status', 'uses' => 'APIController@getDataURLs'));
 });

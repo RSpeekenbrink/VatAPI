@@ -3,6 +3,10 @@
 # VatAPI - Vatsim's data API to JSON
 This application allows you to use Vatsim's data api in json format. It uses the laravel php framework to set up the API's environment.
 
+## How to build/run
+Run this application like any other Laravel Framework Project. More info can be found here:
+https://laravel.com/docs/5.6
+
 ## How to use
 When you have the application running and the databases migrated you can use the api by doing a request to one of the links underneath. You will need to pass your API key as `api_key` variable or use basic auth with your API key and username. Default API key and user account can be found in the UsersTableSeeder class.
 

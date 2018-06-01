@@ -4,8 +4,12 @@ namespace App\Classes;
 
 class DataParser extends VatsimParser {
 
+  private $general = array();
   private $controllers = array();
   private $pilots = array();
+  private $prefile = array();
+  private $voiceServers = array();
+  private $servers = array();
 
   private $SECTION_PREFIX = '!';
   private $SECTION_SUFFIX = ':';
@@ -58,15 +62,69 @@ class DataParser extends VatsimParser {
   }
 
   protected function processGeneral($line) {
-
+    $data = explode(' = ', $line);
+    if(count($data) > 1) {
+      list($k, $v) = $data;
+      $this->general[ $k ] = $v;
+    }
   }
 
   protected function processVoiceServers($line) {
-
+    $data = explode(':', $line);
+    
+    if(count($data) >= 5) {
+      $this->voiceServers[$data[1]] = array (
+        'hostname_or_IP' => $data[0],
+        'location' => $data[1],
+        'name' => $data[2],
+        'clients_connection_allowed' => $data[3],
+        'type_of_voice_server' => $data[4],
+      );
+    }
   }
 
   protected function processClients($line) {
     $data = explode($this->CLIENTDATA_SEPERATOR, $line);
+
+    if(count($data) == 42) {
+      $newClient = $this->parseClientData($data);
+  
+      if($data[3] == $this->CLIENTTYPE_PILOT) {
+        array_push($this->pilots, $newClient);
+      }
+      if($data[3] == $this->CLIENTTYPE_CONTROLLER) {
+        array_push($this->controllers, $newClient);
+      }     
+    }
+
+  }
+
+  protected function processPrefile($line) {
+    $data = explode($this->CLIENTDATA_SEPERATOR, $line);
+
+    if(count($data) == 42) {
+      $newClient = $this->parseClientData($data);
+
+      array_push($this->prefile, $newClient);
+    }
+  }
+
+  protected function processServers($line) {
+    $data = explode(':', $line);
+
+    if(count($data) >= 5) {
+      $this->servers[$data[0]] = array (
+        'ident' => $data[0],
+        'hostname_or_IP' => $data[1],
+        'location' => $data[2],
+        'name' => $data[3],
+        'clients_connection_allowed' => $data[4],
+      );
+    }
+  }
+
+  private function parseClientData($data) {
+    $newClient = array();
 
     if(count($data) == 42) {
       $newClient = array(
@@ -112,23 +170,9 @@ class DataParser extends VatsimParser {
         'QNH_iHg' => $data[39],
         'QNH_Mb' => $data[40],
       );
-  
-      if($data[3] == $this->CLIENTTYPE_PILOT) {
-        array_push($this->pilots, $newClient);
-      }
-      if($data[3] == $this->CLIENTTYPE_CONTROLLER) {
-        array_push($this->controllers, $newClient);
-      }     
     }
 
-  }
-
-  protected function processPrefile($line) {
-
-  }
-
-  protected function processServers($line) {
-
+    return $newClient;
   }
 
   private function getStringBetween($string, $start, $end){
@@ -144,8 +188,12 @@ class DataParser extends VatsimParser {
   public function getData() {
     $this->parse();
     return array(
+      'general' => $this->general,
       'pilots' => $this->pilots,
-      'atc' => $this->controllers
+      'atc' => $this->controllers,
+      'prefile' => $this->prefile,
+      'voiceservers' => $this->voiceServers,
+      'servers' => $this->servers,
     );
   }
 

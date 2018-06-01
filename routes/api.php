@@ -20,4 +20,5 @@ Route::get('/key', function(Request $request) {
 Route::prefix('vatapi')->middleware('auth:api')->group(function () {
     Route::get('status', array('as' => 'vatapi.status', 'uses' => 'APIController@getDataURLs'));
     Route::get('data', array('as' => 'vatapi.data', 'uses' => 'APIController@getData'));
+    Route::get('data/clients', array('as' => 'vatapi.data.clients', 'uses' => 'APIController@getClientData'));
 });

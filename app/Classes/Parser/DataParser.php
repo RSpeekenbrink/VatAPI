@@ -149,4 +149,12 @@ class DataParser extends VatsimParser {
     );
   }
 
+  public function getClientData() {
+    $this->parse();
+    return array(
+      'pilots' => $this->pilots,
+      'atc' => $this->controllers
+    );
+  }
+
 }

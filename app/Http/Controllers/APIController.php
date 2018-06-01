@@ -15,9 +15,16 @@ class APIController extends Controller
     }
 
     public function getData() {
-      $statusparser = new StatusParser();
-      $dataServers = $statusparser->getDataURLs();
-      $dataparser = new DataParser($dataServers[array_rand($dataServers)]);
-      return json_encode($dataparser->getData());
+        $statusparser = new StatusParser();
+        $dataServers = $statusparser->getDataURLs();
+        $dataparser = new DataParser($dataServers[array_rand($dataServers)]);
+        return json_encode($dataparser->getData());
+    }
+
+    public function getClientData() {
+        $statusparser = new StatusParser();
+        $dataServers = $statusparser->getDataURLs();
+        $dataparser = new DataParser($dataServers[array_rand($dataServers)]);
+        return json_encode($dataparser->getClientData());
     }
 }

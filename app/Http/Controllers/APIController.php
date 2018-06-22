@@ -9,19 +9,37 @@ use App\Classes\DataParser;
 
 class APIController extends Controller
 {
-    public function getDataURLs() {
+    /**
+     * Get data URLs
+     * 
+     * @return string data urls array as json
+     */
+    public function getDataURLs()
+    {
         $statusparser = new StatusParser();
         return json_encode($statusparser->getStatusURLs());
     }
 
-    public function getData() {
+    /**
+     * Get all data
+     * 
+     * @return string data array as json
+     */
+    public function getData()
+    {
         $statusparser = new StatusParser();
         $dataServers = $statusparser->getDataURLs();
         $dataparser = new DataParser($dataServers[array_rand($dataServers)]);
         return json_encode($dataparser->getData());
     }
 
-    public function getClientData() {
+    /**
+     * Get only client data
+     * 
+     * @return string client data array as json
+     */
+    public function getClientData()
+    {
         $statusparser = new StatusParser();
         $dataServers = $statusparser->getDataURLs();
         $dataparser = new DataParser($dataServers[array_rand($dataServers)]);

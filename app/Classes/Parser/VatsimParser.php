@@ -14,31 +14,33 @@ abstract class VatsimParser
     
     /**
      * parses an entity line e.g. for a pilot, controller or server
-     * 
+     *
      * @param line
      */
-    protected abstract function processLine($line);
+    abstract protected function processLine($line);
 
     /**
      * Parses a file received from the source url and calls {$link {@link #processLine(String)} for
      * a specific entity.
+     *
+     * @return null
      */
-    protected function parse() {
-        if(!isset($this->source)) {
+    protected function parse()
+    {
+        if (!isset($this->source)) {
             $this->processLine($ERROR_TOKEN);
             return;
         }
 
         try {
-            if (filter_var($this->source, FILTER_VALIDATE_URL)) { 
+            if (filter_var($this->source, FILTER_VALIDATE_URL)) {
                 $fileContent = file_get_contents($this->source);
 
                 $lines = explode("\r\n", $fileContent);
 
-                foreach($lines as $line) {
-                    if(strlen($line) > 0)
-                    {
-                        if(!substr($line, 0, strlen($this->COMMENT_LN) == $this->COMMENT_LN)) {
+                foreach ($lines as $line) {
+                    if (strlen($line) > 0) {
+                        if (!substr($line, 0, strlen($this->COMMENT_LN) == $this->COMMENT_LN)) {
                             $this->processLine($line);
                         }
                     }
@@ -46,14 +48,20 @@ abstract class VatsimParser
 
                 return;
             }
-        }
-        catch(Exception $e) {
+        } catch (Exception $e) {
             $this->processLine($ERROR_TOKEN);
-            return; 
+            return;
         }
     }
 
-    protected function setSource($source) {
+    /**
+     * Set source url to get the data from
+     *
+     * @param string source url
+     * @return VatsimParser
+     */
+    protected function setSource($source)
+    {
         $this->source = $source;
         return $this;
     }
